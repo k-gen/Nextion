@@ -2,8 +2,8 @@ name: chooseNext
 
 on:
   schedule:
-    - cron: '0 11 * * 2-5'
-    - cron: '0 17 * * 1'
+    # UTC のため日本時間 +9
+    - cron: '00 2 * * 1'
 env:
   NOTION_KEY: ${{ secrets.NOTION_KEY }}
   NOTION_DATABASE_ID: ${{ secrets.NOTION_DATABASE_ID }}
@@ -11,16 +11,7 @@ env:
 jobs:
   chooseNext:
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [17.x]
     steps:
     - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ matrix.node-version }}
-    - run: |
-        yarn
-        yarn build
-        yarn start:chooseNext
+    - uses: ./.github/actions/node-setup
+    - run: yarn start:chooseNext
